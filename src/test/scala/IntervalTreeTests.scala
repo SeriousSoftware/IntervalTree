@@ -7,8 +7,7 @@ class IntervalTreeTests extends FunSuite {
 		val xt = new IntervalTree[Int]
 		for (line <- Source.fromFile(filename).getLines) {
 			val token = line.split(",")
-			val v = new Interval(token(0).toInt, token(1).toInt)
-			xt.put(v, token(2).toInt)
+			xt.put(token(0).toInt, token(1).toInt, token(2).toInt)
 		}
 		xt
 	}
@@ -18,7 +17,7 @@ class IntervalTreeTests extends FunSuite {
 		val answer = "(4, 8, 8):3 (5, 8, 18):2 (7, 10, 10):5 (15, 18, 18):4 " ++
                      "(17, 19, 24):1 (21, 24, 24):6 "
 		assert(answer == xt.toString)
-		xt.put(new Interval(16, 22), 7)
+		xt.put(16, 22, 7)
 		val answer2 = "(4, 8, 8):3 (5, 8, 22):2 (7, 10, 10):5 (15, 18, 22):4 " ++
                      "(16, 22, 22):7 (17, 19, 24):1 (21, 24, 24):6 "
         assert(answer2 == xt.toString)

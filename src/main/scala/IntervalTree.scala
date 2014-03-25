@@ -9,8 +9,8 @@ class IntervalTree[T] {
 		       var value:    T
 		      )
 
-	def put(v: Interval, value: T) {
-		root = put(root, v, value)
+	def put(lo: Int, hi: Int, value: T) {
+		root = put(root, new Interval(lo, hi), value)
 	}
 
 	private def put(x: Node, v: Interval, value: T): Node = {

@@ -11,6 +11,12 @@ class IntervalTests extends FunSuite {
 	val none1    = new Interval[Int](5, 9, 8)
 	val none2    = new Interval[Int](21, 300, 9)
 
+	test("throw IllegalArgumentException if lo > hi") {
+		intercept[IllegalArgumentException] {
+			val v = new Interval(222, 100, 1)
+		}
+	}
+
 	test("equals is reflexive (v == v)")   { assert(v == v) }
 	test("equals is symmetric (v2 == v and v == v2")  { 
 		assert(v2 == v) 

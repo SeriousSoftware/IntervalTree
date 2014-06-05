@@ -15,14 +15,20 @@ class IntervalTreeTests extends FunSuite {
 
 	test("+= successfully adds Intervals into a tree") {
 		val xt = treeFromFile("src/test/resources/tree1.txt")
-		val answer = "(4, 8, 3):8 (5, 8, 2):18 (7, 10, 5):10 (15, 18, 4):18 " ++
-                     "(17, 19, 1):24 (21, 24, 6):24 "
+    val answer = "4 8 3 8\n5 8 2 18\n7 10 5 10\n15 18 4 18\n17 19 1 24\n21 24 6 24\n"
 		assert(answer == xt.toString)
 		xt += new Interval(16, 22, 7)
-		val answer2 = "(4, 8, 3):8 (5, 8, 2):22 (7, 10, 5):10 (15, 18, 4):22 " ++
-                     "(16, 22, 7):22 (17, 19, 1):24 (21, 24, 6):24 "
-
+  	val answer2 = "4 8 3 8\n5 8 2 22\n7 10 5 10\n15 18 4 22\n" +
+  	              "16 22 7 22\n17 19 1 24\n21 24 6 24\n"
     assert(answer2 == xt.toString)
+	}
+
+	test("size of tree1 is 6") {
+		val xt = treeFromFile("src/test/resources/tree1.txt")
+		assert(xt.size === 6)
+		xt += new Interval(22, 22, 22)
+		xt += new Interval(2000, 4000, 23)
+		assert(xt.size === 8)
 	}
 
 	test("(5, 5) intersects intervals (5, 8, 2) and (4, 8, 3) in tree1") {

@@ -1,5 +1,6 @@
 class IntervalTree[T] {
 
+	private var nnodes: Long = 0
 	private var root: Node = null;
 
 	class Node(var v: Interval[T],
@@ -12,6 +13,7 @@ class IntervalTree[T] {
 
 		def put(x: Node, v: Interval[T]): Node = {
 			if (x == null) {
+				nnodes = nnodes + 1
 				new Node(v, null, null, v.hi)
 			} else if (v < x.v) {
 				x.left = put(x.left, v)
@@ -56,13 +58,20 @@ class IntervalTree[T] {
 		}
 	}
 	
+	def size = nnodes
+
+	/**
+	 * Each node is written on a separate line where each line has the form
+	 *
+	 * lo hi value max
+	 */
 	override def toString = {
 		def treeString(x: Node): String = {
 			if (x == null) {
 				""
 			} else {
 				treeString(x.left) ++
-				s"${x.v}:${x.max} " ++
+				s"${x.v} ${x.max}\n" ++
 				treeString(x.right)
 			}
 		}
@@ -72,6 +81,7 @@ class IntervalTree[T] {
 }
 
 class Interval[T](val lo: Int, val hi: Int, value: T) extends Ordered[Interval[T]] {
+	require(lo <= hi, s"\n\t\tInterval: lo <= hi? lo == $lo  hi == $hi")
 
 	def intersects(that: Interval[T]): Boolean = 
 		this == that                             ||
@@ -100,6 +110,6 @@ class Interval[T](val lo: Int, val hi: Int, value: T) extends Ordered[Interval[T
 	 */
 	def compare(that: Interval[T]) = this.lo compare that.lo
 
-	override def toString = s"($lo, $hi, $value)"
+	override def toString = s"$lo $hi $value"
 
 }

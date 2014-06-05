@@ -2,12 +2,11 @@ class IntervalTree[T] {
 
 	private var root: Node = null;
 
-	class Node(var v:        Interval, 
-		       var left:     Node,
-		       var right:    Node,
-		       var himax:    Int,
-		       var value:    T
-		      )
+	class Node(var v: Interval,
+		         var left: Node,
+		         var right: Node,
+		         var max: Int,
+		         var value: T)
 
 	def put(lo: Int, hi: Int, value: T) {
 		root = put(root, new Interval(lo, hi), value)
@@ -18,11 +17,11 @@ class IntervalTree[T] {
 			new Node(v, null, null, v.hi, value)
 		} else if (v < x.v) {
 			x.left = put(x.left, v, value)
-			x.himax = x.left.himax max x.himax
+			x.max = x.left.max max x.max
 			x
 		} else {
 			x.right = put(x.right, v, value)
-			x.himax = x.right.himax max x.himax
+			x.max = x.right.max max x.max
 			x
 		}
 	}
@@ -31,11 +30,14 @@ class IntervalTree[T] {
 
 	def delete(lo: Int, hi: Int): IntervalTree[T] = ???
 
+	/**
+	 * Get all of the values that intersect the interval (lo, hi).
+	 */
 	def intersects(lo: Int, hi: Int): Iterable[T] = 
 		intersects(root, new Interval(lo, hi), List[T]())
 
 	/**
-	 * Run time ~ R * lg(N) for if there are N nodes in the tree and 
+	 * Run time ~ R * lg(N) if there are N nodes in the tree and 
 	 * the query interval intersects R nodes.  Also, since this is a 
 	 * unbalanced BST, the worst case is ~ R * N. 
 	 *
@@ -45,7 +47,7 @@ class IntervalTree[T] {
 		if (x == null) xs
 		else {
 			val ys = if (v intersects x.v) x.value :: xs else xs
-			if (x.left != null && x.left.himax >= v.lo) 
+			if (x.left != null && x.left.max >= v.lo) 
 				intersects(x.right, v, intersects(x.left, v, ys))
 			else
 				intersects(x.right, v, ys)
@@ -58,7 +60,7 @@ class IntervalTree[T] {
 				""
 			} else {
 				treeString(x.left) ++
-				s"(${x.v.lo}, ${x.v.hi}, ${x.himax}):${x.value} " ++
+				s"(${x.v.lo}, ${x.v.hi}, ${x.max}):${x.value} " ++
 				treeString(x.right)
 			}
 		}

@@ -8,17 +8,17 @@ class IntervalTreeTests extends FunSuite {
 		for (line <- Source.fromFile(filename).getLines) {
 			val token = line.split(",")
 			val v = new Interval[Int](token(0).toInt, token(1).toInt, token(2).toInt)
-			xt.put(v)
+			xt += v
 		}
 		xt
 	}
 
-	test("Successfully put tree1 nodes into tree") {
+	test("+= successfully adds Intervals into a tree") {
 		val xt = treeFromFile("src/test/resources/tree1.txt")
 		val answer = "(4, 8, 3):8 (5, 8, 2):18 (7, 10, 5):10 (15, 18, 4):18 " ++
                      "(17, 19, 1):24 (21, 24, 6):24 "
 		assert(answer == xt.toString)
-		xt.put(new Interval(16, 22, 7))
+		xt += new Interval(16, 22, 7)
 		val answer2 = "(4, 8, 3):8 (5, 8, 2):22 (7, 10, 5):10 (15, 18, 4):22 " ++
                      "(16, 22, 7):22 (17, 19, 1):24 (21, 24, 6):24 "
 

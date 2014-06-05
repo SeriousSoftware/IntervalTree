@@ -8,28 +8,29 @@ class IntervalTree[T] {
 		         var max: Int)
 		         
 
-	def put(v: Interval[T]) {
+	def +=(v: Interval[T]) {
+
+		def put(x: Node, v: Interval[T]): Node = {
+			if (x == null) {
+				new Node(v, null, null, v.hi)
+			} else if (v < x.v) {
+				x.left = put(x.left, v)
+				x.max = x.left.max max x.max
+				x
+			} else {
+				x.right = put(x.right, v)
+				x.max = x.right.max max x.max
+				x
+			}
+		}
+
 		root = put(root, v)
 	}
 
-	private def put(x: Node, v: Interval[T]): Node = {
-		if (x == null) {
-			new Node(v, null, null, v.hi)
-		} else if (v < x.v) {
-			x.left = put(x.left, v)
-			x.max = x.left.max max x.max
-			x
-		} else {
-			x.right = put(x.right, v)
-			x.max = x.right.max max x.max
-			x
-		}
-	}
-
-	def delete(v: Interval[T]) = ???
+	def -=(v: Interval[T]) = ???
 
 	/**
-	 * Get all of the intervals that intersect the interval v.
+	 * Returns a List of all of the intervals that intersect the interval v.
 	 */
 	def intersects(v: Interval[T]): Iterable[Interval[T]] = 
 		intersects(root, v, List[Interval[T]]())

@@ -1,41 +1,45 @@
 class IntervalTree[T] {
 
 	private var nnodes: Long = 0
-	private var root: Node = null;
+	private var root: Node   = null;
 
-	class Node(var v: Interval[T],
-		         var left: Node,
+	class Node(var v:     Interval,
+		         var left:  Node,
 		         var right: Node,
-		         var max: Int)
+		         var max:   Int,
+		         var value: T)
 		         
 
-	def +=(v: Interval[T]) {
+	def +=(p: (Interval, T)) {
+		val v     = p._1 
+		val value = p._2
 
-		def put(x: Node, v: Interval[T]): Node = {
+		def put(x: Node, v: Interval, value: T): Node = {
 			if (x == null) {
 				nnodes = nnodes + 1
-				new Node(v, null, null, v.hi)
+				new Node(v, null, null, v.hi, value)
 			} else if (v < x.v) {
-				x.left = put(x.left, v)
+				x.left = put(x.left, v, value)
 				x.max = x.left.max max x.max
 				x
 			} else {
-				x.right = put(x.right, v)
+				x.right = put(x.right, v, value)
 				x.max = x.right.max max x.max
 				x
 			}
 		}
 
-		root = put(root, v)
+		root = put(root, v, value)
 	}
 
-	def -=(v: Interval[T]) = ???
+	def -=(v: Interval) = ???
 
 	/**
-	 * Returns a List of all of the intervals that intersect the interval v.
+	 * Returns a List of (Interval, value[T]) pairs for each Interval
+	 * that intersects the interval v.
 	 */
-	def intersects(v: Interval[T]): Iterable[Interval[T]] = 
-		intersects(root, v, List[Interval[T]]())
+	def intersects(v: Interval): List[(Interval, T)] = 
+		intersects(root, v, List[(Interval, T)]())
 
 	/**
 	 * Run time ~ R * lg(N) if there are N nodes in the tree and 
@@ -45,12 +49,12 @@ class IntervalTree[T] {
 	 * So try not to insert intervals in sorted order!
 	 */
 	private def intersects(x: Node, 
-	                       v: Interval[T], 
-	                       vs: List[Interval[T]]): List[Interval[T]] = 
+	                       v: Interval, 
+	                       vs: List[(Interval, T)]): List[(Interval, T)] = 
 	{
 		if (x == null) vs
 		else {
-			val ys = if (v intersects x.v) x.v :: vs else vs
+			val ys = if (v intersects x.v) (x.v, x.value) :: vs else vs
 			if (x.left != null && x.left.max >= v.lo) 
 				intersects(x.right, v, intersects(x.left, v, ys))
 			else
@@ -71,45 +75,42 @@ class IntervalTree[T] {
 				""
 			} else {
 				treeString(x.left) ++
-				s"${x.v} ${x.max}\n" ++
+				s"${x.v} ${x.value} ${x.max}\n" ++
 				treeString(x.right)
 			}
 		}
-
 		treeString(root)
 	}
 }
 
-class Interval[T](val lo: Int, val hi: Int, value: T) extends Ordered[Interval[T]] {
+class Interval(val lo: Int, val hi: Int) extends Ordered[Interval] {
 	require(lo <= hi, s"\n\t\tInterval: lo <= hi? lo == $lo  hi == $hi")
 
-	def intersects(that: Interval[T]): Boolean = 
+	def intersects(that: Interval): Boolean = 
 		this == that                             ||
 		that.lo >= this.lo && that.lo <= this.hi ||
 		this.lo >= that.lo && this.lo <= that.hi ||
 		this.lo <= that.lo && this.hi >= that.hi ||
 		this.lo >= that.lo && this.hi <= that.hi
 	
-	def canEqual(a: Any) = a.isInstanceOf[Interval[T]]
+	def canEqual(a: Any) = a.isInstanceOf[Interval]
 
 	/**
 	 * Two inteverals are equal if their endpoints are equal.
-	 * Values are not considered testing for equality; i.e., 
-	 * intervals can have different values yet still be equal.
 	 */
 	override def equals(that: Any): Boolean = 
 		that match {
-			case that: Interval[T] => that.canEqual(this) &&
+			case that: Interval => that.canEqual(this) &&
 			                          that.lo == that.lo  &&
 			                          this.hi == that.hi
 			case _                 => false
     }
 
 	/**
-	 * Compares inteverals by their lo values.
+	 * Compares inteverals by their lo endpoint.
 	 */
-	def compare(that: Interval[T]) = this.lo compare that.lo
+	def compare(that: Interval) = this.lo compare that.lo
 
-	override def toString = s"$lo $hi $value"
+	override def toString = s"$lo $hi"
 
 }

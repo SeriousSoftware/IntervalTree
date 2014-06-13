@@ -1,19 +1,19 @@
 import org.scalatest.FunSuite
 
 class IntervalTests extends FunSuite {
-	val v        = new Interval[Int](10, 20, 1)
-	val right    = new Interval[Int](15, 30, 2)
-	val left     = new Interval[Int](5, 15, 3)
-	val inside   = new Interval[Int](12, 18, 4)
-	val contains = new Interval[Int](5, 30, 5)
-	val v2       = new Interval[Int](10, 20, 6)
-	val v3       = new Interval[Int](10, 20, 7)
-	val none1    = new Interval[Int](5, 9, 8)
-	val none2    = new Interval[Int](21, 300, 9)
+	val v        = new Interval(10, 20)
+	val right    = new Interval(15, 30)
+	val left     = new Interval(5, 15)
+	val inside   = new Interval(12, 18)
+	val contains = new Interval(5, 30)
+	val v2       = new Interval(10, 20)
+	val v3       = new Interval(10, 20)
+	val none1    = new Interval(5, 9)
+	val none2    = new Interval(21, 300)
 
 	test("throw IllegalArgumentException if lo > hi") {
 		intercept[IllegalArgumentException] {
-			val v = new Interval(222, 100, 1)
+			val v = new Interval(222, 100)
 		}
 	}
 

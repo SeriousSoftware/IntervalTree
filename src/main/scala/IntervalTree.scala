@@ -1,3 +1,5 @@
+package intervaltree
+
 class IntervalTree[T] {
 
 	private var nnodes: Long = 0

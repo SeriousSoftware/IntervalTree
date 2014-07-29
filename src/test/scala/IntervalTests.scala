@@ -1,4 +1,5 @@
 import org.scalatest.FunSuite
+import intervaltree._
 
 class IntervalTests extends FunSuite {
 	val v        = new Interval(10, 20)

@@ -1,5 +1,6 @@
 import org.scalatest.FunSuite
 import scala.io.Source
+import intervaltree._ 
 
 class IntervalTreeTests extends FunSuite {
 

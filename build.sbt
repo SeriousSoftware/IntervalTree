@@ -1,7 +1,11 @@
+organization := "com.cupenya"
+organizationHomepage := Some(url("http://cupenya.com"))
+organizationName := "Cupenya bv"
+
 name := "IntervalTree"
-
+description := "Interval Tree implementation in Scala."
 version := "0.1"
+scalaVersion := "2.11.8"
 
-scalaVersion := "2.10.3"
-
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+libraryDependencies += "org.spire-math" %% "spire" % "0.11.0"

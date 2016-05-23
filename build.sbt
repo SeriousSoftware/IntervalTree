@@ -2,7 +2,7 @@ organization := "com.cupenya"
 organizationHomepage := Some(url("http://cupenya.com"))
 organizationName := "Cupenya bv"
 
-name := "IntervalTree"
+name := "Interval Tree"
 description := "Interval Tree implementation in Scala."
 version := "0.1"
 scalaVersion := "2.11.8"

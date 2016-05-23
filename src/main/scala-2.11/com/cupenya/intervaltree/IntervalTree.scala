@@ -3,10 +3,12 @@ package intervaltree
 
 // TODO Use interval of spire lib
 
-
-// import spire.implicits.{eqOps => _}
+import spire.algebra.Order
+import spire.implicits.{eqOps => _}
 import spire.implicits._
 import spire.math._
+
+import scala.math.Ordering.Implicits._
 
 /**
   * Augmented tree
@@ -14,7 +16,7 @@ import spire.math._
   * @tparam T Numeric type of endpoints
   * @tparam P Payload type
   */
-class IntervalTree[T: Numeric, P] {
+class IntervalTree[T: Order, P] {
   private var root: Option[Node] = None
 
   @inline protected[this] final def getBegin(v: Interval[T]) = v match {

@@ -1,13 +1,32 @@
-package com.cupenya
-package intervaltree
+package com.cupenya.intervaltree
+
+import java.time.Instant
+import java.time.temporal.ChronoUnit._
 
 import org.scalatest.{FunSuite, Matchers}
+import spire.algebra.Order
 import spire.implicits._
 import spire.math.Interval
 
+import scala.math.Ordering.Implicits._
 import scala.io.Source
 
-class IntervalTreeTests extends FunSuite with Matchers {
+class IntervalTreeDateTests extends FunSuite with Matchers {
+  implicit object DateOrdering extends Order[Instant] {
+    def compare(x: Instant, y: Instant) = x compareTo y
+  }
+
+  val xt = new IntervalTree[Instant, Int]
+
+  val datum = Instant.now()
+  val contains = Interval.openUpper(datum, datum.plus(25, DAYS))
+
+
+  def co(n1: Int, n2: Int) = Interval.openUpper(n1, n2)
+
+  xt += (contains, 0)
+  xt += (contains, 0)
+/*
   val pristine = List((co(4, 8), 3, 8), (co(5, 8), 2, 18), (co(7, 10), 5, 10),
     (co(15, 18), 4, 18), (co(17, 19), 1, 24), (co(21, 24), 6, 24))
 
@@ -20,7 +39,6 @@ class IntervalTreeTests extends FunSuite with Matchers {
     xt
   }
 
-  def co(n1: Int, n2: Int) = Interval.openUpper(n1, n2)
 
   test("+= successfully adds Intervals into a tree") {
     val xt = treeFromFile("src/test/resources/tree1.txt")
@@ -77,5 +95,6 @@ class IntervalTreeTests extends FunSuite with Matchers {
     val xs = xt.intersections(co(10, 15))
     xs shouldBe empty
   }
+*/
 
 }

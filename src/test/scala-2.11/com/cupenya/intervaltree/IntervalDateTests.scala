@@ -1,20 +1,23 @@
-package com.cupenya
-package intervaltree
+package com.cupenya.intervaltree
+
+import java.time._
+import java.time.temporal.ChronoUnit._
 
 import org.scalatest.FunSuite
-import spire.implicits._
 import spire.math.Interval
 
-class IntervalTests extends FunSuite {
-  val contains = Interval.openUpper(5D, 30D)
-  val inside = Interval.openUpper(12D, 18D)
-  val left = Interval.openUpper(5D, 15D)
-  val none1 = Interval.openUpper(5D, 9D)
-  val none2 = Interval.openUpper(21D, 300D)
-  val right = Interval.openUpper(15D, 30D)
-  val v = Interval.openUpper(10D, 20D)
-  val (v2, v3) = (v, v)
+// import scala.math.Ordering.Implicits._
 
+class IntervalDateTests extends FunSuite {
+  val datum = Instant.now()
+  val contains = Interval.openUpper(datum, datum.plus(25, DAYS))
+  val inside = Interval.openUpper(datum.plus(7, DAYS), datum.plus(13, DAYS))
+  val left = Interval.openUpper(datum, datum.plus(10, DAYS))
+  val none1 = Interval.openUpper(datum, datum.plus(4, DAYS))
+  val none2 = Interval.openUpper(datum.plus(16, DAYS), datum.plus(25, DAYS))
+  val right = Interval.openUpper(datum.plus(10, DAYS), datum.plus(25, DAYS))
+  val v = Interval.openUpper(datum.plus(5, DAYS), datum.plus(15, DAYS))
+  val (v2, v3) = (v, v)
 
   test("equals is reflexive (v == v)") {
     assert(v === v)
@@ -69,26 +72,26 @@ class IntervalTests extends FunSuite {
     assert(!(none2 intersects v))
   }
 
-/*  test("v < right") {
-    assert(v < right)
-  }
-  test("right > v") {
-    assert(right > v)
-  }
-  test("v > left") {
-    assert(v > left)
-  }
-  test("left < v") {
-    assert(left < v)
-  }
+  /*    test("v < right") {
+        assert(v < right)
+      }
+      test("right > v") {
+        assert(right > v)
+      }
+      test("v > left") {
+        assert(v > left)
+      }
+      test("left < v") {
+        assert(left < v)
+      }
 
-  test("v <= right") {
-    assert(v <= right)
-  }
-  test("right >= v") {
-    assert(right >= v)
-  }
-  test("v <= v") {
-    assert(v >= v)
-  }*/
+      test("v <= right") {
+        assert(v <= right)
+      }
+      test("right >= v") {
+        assert(right >= v)
+      }
+      test("v <= v") {
+        assert(v >= v)
+      }*/
 }

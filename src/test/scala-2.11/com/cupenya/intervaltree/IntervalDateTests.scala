@@ -4,11 +4,16 @@ import java.time._
 import java.time.temporal.ChronoUnit._
 
 import org.scalatest.FunSuite
+import spire.algebra.Order
 import spire.math.Interval
 
 // import scala.math.Ordering.Implicits._
 
 class IntervalDateTests extends FunSuite {
+  implicit object InstantOrdering extends Order[Instant] {
+    def compare(lhs: Instant, rhs: Instant) = lhs compareTo rhs
+  }
+
   val datum = Instant.now()
   val contains = Interval.openUpper(datum, datum.plus(25, DAYS))
   val inside = Interval.openUpper(datum.plus(7, DAYS), datum.plus(13, DAYS))

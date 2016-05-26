@@ -7,6 +7,7 @@ import spire.algebra.Order
 import spire.implicits.{eqOps => _}
 import spire.implicits._
 import spire.math._
+import spire.math.interval.{Bound, Closed, Open, ValueBound}
 
 import scala.math.Ordering.Implicits._
 
@@ -19,23 +20,39 @@ import scala.math.Ordering.Implicits._
 class IntervalTree[T: Order, P] {
   private var root: Option[Node] = None
 
-  @inline protected[this] final def getBegin(v: Interval[T]) = v match {
-    case Bounded(lower, _, _) => lower
-    case _ => ???
+  class Node(val v: Interval[T],
+             var left: Option[Node],
+             var right: Option[Node],
+             var max: Bound[T],
+             val payLoad: P) {
+    def getDebugInfo: (Interval[T], P, T) = (v, payLoad,
+      max match {
+        case Closed(a) => a
+        case Open(a) => a
+        case _ => ???
+      })
+
+    override def toString = s"$v $payLoad ${getDebugInfo._3}"
   }
+
+  implicit object BoundOrdering extends Order[Bound[T]] {
+    def compare(lhs: Bound[T], rhs: Bound[T]) =
+      (lhs, rhs) match {
+        case (ValueBound(lv), ValueBound(rv)) => lv compare  rv
+      }
+  }
+
+  //@inline protected[this] final def getBegin(v: Interval[T]): Bound[T] = v.lowerBound
 
   def +=(p: (Interval[T], P)) {
 
     def put(x: Option[Node], v: Interval[T], value: P): Option[Node] =
       if (x.isEmpty) {
         Option(new Node(v, None, None,
-          v match {
-            case Bounded(_, upper, _) => upper
-            case _ => ???
-          },
+          v.upperBound,
           value))
       } else {
-        if (getBegin(v) < getBegin(x.get.v)) {
+        if (v.lowerBound < x.get.v.lowerBound) {
           x.get.left = put(x.get.left, v, value)
           x.get.max = max(x.get.left.get.max, x.get.max)
         } else {
@@ -71,7 +88,7 @@ class IntervalTree[T: Order, P] {
       else {
         val ys = if (v.intersects(x.get.v)) (x.get.v, x.get.payLoad) :: vs
         else vs
-        if (x.get.left.isDefined && x.get.left.get.max >= getBegin(v))
+        if (x.get.left.isDefined && v.lowerBound < x.get.left.get.max )
           intersections(x.get.right, v, intersections(x.get.left, v, ys))
         else
           intersections(x.get.right, v, ys)
@@ -89,16 +106,6 @@ class IntervalTree[T: Order, P] {
       else (nodesToList(x.get.left) :+ x.get) ++ nodesToList(x.get.right)
     }
     nodesToList(root)
-  }
-
-  class Node(val v: Interval[T],
-             var left: Option[Node],
-             var right: Option[Node],
-             var max: T,
-             val payLoad: P) {
-    def getDebugInfo: (Interval[T], P, T) = (v, payLoad, max)
-
-    override def toString = s"$v $payLoad $max"
   }
 
 }

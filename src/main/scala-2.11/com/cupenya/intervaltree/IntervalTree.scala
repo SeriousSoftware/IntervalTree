@@ -20,11 +20,14 @@ import scala.math.Ordering.Implicits._
 class IntervalTree[T: Order, P] {
   private var root: Option[Node] = None
 
+  sealed trait Nodes  // TODO Use instead of Option a NilNode class
+  case class NilNode() extends Nodes
+
   class Node(val v: Interval[T],
              var left: Option[Node],
              var right: Option[Node],
              var max: Bound[T],
-             val payLoad: P) {
+             val payLoad: P) extends Nodes {
     def getDebugInfo: (Interval[T], P, T) = (v, payLoad,
       max match {
         case Closed(a) => a
